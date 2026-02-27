@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>مقترح وصفات رمضان</title>
+  <link rel="icon" href="ramadan.png">
+  <link rel="stylesheet" href="./styles.css" />
+  <meta name="color-scheme" content="light">
+  <!-- Turnstile script is injected from app.js after setting site key -->
+</head>
+<body>
+  <header class="hero">
+    <div class="heroDecor" aria-hidden="true">
+      <span class="hang hangLeft"></span>
+      <span class="hang hangRight"></span>
+    </div>
+    <div class="container heroInner">
+      <div class="heroMoon" aria-hidden="true">🌙</div>
+      <h1>مقترح وصفات رمضان</h1>
+      <p class="heroSub">اكتبي المكونات أو ارفعي صورة… واحصلي على وصفات  للإفطار والسحور تناسب ذوقك</p>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="layout">
+      <aside class="sidebar">
+        <section class="cardBox">
+          <div class="cardBoxHead">
+            <div class="cardBoxTitle">تصفية سريعة</div>
+            <span class="bolt" aria-hidden="true">⚡</span>
+          </div>
+          <div class="chips">
+            <button class="chip active" data-filter="balanced" type="button" aria-pressed="true">متوازن</button>
+            <button class="chip" data-filter="quick" type="button" aria-pressed="false">سريع</button>
+            <button class="chip" data-filter="easy" type="button" aria-pressed="false">سهل</button>
+            <button class="chip" data-filter="budget" type="button" aria-pressed="false">اقتصادي</button>
+            <button class="chip" data-filter="light" type="button" aria-pressed="false">خفيف</button>
+          </div>
+        </section>
+
+      
+      </aside>
+
+      <section class="mainCard">
+        <div class="tabs" role="tablist" aria-label="تصنيف">
+          <button class="tab active" data-category="iftar" type="button">إفطار</button>
+          <button class="tab" data-category="suhoor" type="button">سحور</button>
+          <button class="tab" data-category="dessert" type="button">حلويات</button>
+          <button class="tab" data-category="drink" type="button">مشروبات</button>
+        </div>
+
+        <h2 class="formTitle">المكونات المتوفرة لديك</h2>
+        <textarea id="ingredients" class="ingredientsBox" placeholder="مثال: دجاج، أرز، طماطم، بصل... (أو اتركيها فارغة واختاري صورة)" rows="4"></textarea>
+
+        <div class="formRow">
+          <div class="field">
+            <label class="label">أقصى عدد مكونات ناقصة</label>
+            <select id="missingLimit">
+              <option value="0">0 (بمكوناتك فقط)</option>
+              <option value="1">1</option>
+              <option value="2" selected>2</option>
+              <option value="3">3</option>
+            </select>
+            <div class="muted small">يساعدك تلاقي وصفات قريبة من المتوفر.</div>
+          </div>
+
+          <div class="field">
+            <label class="label">صورة المكونات (اختياري)</label>
+            <input id="image" class="fileInput" type="file" accept="image/*" capture="environment" />
+            <label for="image" class="uploadBox" aria-label="رفع صورة">
+              <div class="uploadIcon" aria-hidden="true">⬆</div>
+              <div class="uploadText">اضغط لرفع صورة</div>
+            </label>
+            <div id="fileHint" class="muted small"></div>
+          </div>
+        </div>
+
+        <div class="turnstileRow" id="turnstileWrap">
+          <div
+            class="cf-turnstile"
+            data-sitekey="0x4AAAAAACfjHBMe387mjRYP"
+            data-callback="onTurnstileSuccess"
+          ></div>
+        </div>
+
+        <button id="btn" class="btnPrimary" disabled type="button">اقترح وصفات</button>
+
+        <div class="actionsRow">
+          <button id="clear" class="btnSecondary" type="button">مسح</button>
+        </div>
+
+        <div id="status" class="status"></div>
+      </section>
+    </div>
+
+    <!-- نتائج الاقتراحات السريعة -->
+    <section id="results" class="results hidden" aria-live="polite">
+      <div class="resultsHead">
+        <h2>النتائج</h2>
+        <div id="detected" class="muted"></div>
+      </div>
+      <div id="grid" class="cards"></div>
+    </section>
+
+    <!-- صندوق تفاصيل الوصفة (Streaming) -->
+    <section id="details" class="details hidden" aria-live="polite">
+      <div class="detailsHead">
+        <h2 id="detailsTitle">تفاصيل الوصفة</h2>
+        <div class="detailsActions">
+          <button id="copyDetails" class="btnGhost" type="button">نسخ</button>
+          <a id="detailsYoutube" class="btnGhost" href="#" target="_blank" rel="noopener">فيديو يوتيوب</a>
+          <button id="closeDetails" class="btnSecondary" type="button">إغلاق</button>
+        </div>
+      </div>
+
+      <div id="detailsStatus" class="muted small" style="margin-top:6px;"></div>
+
+      <!-- أثناء الستريم: النص يطلع تدريجيًا -->
+      <pre id="detailsText" class="detailsText"></pre>
+
+      <!-- بعد اكتمال الستريم: عرض منسّق وواضح -->
+      <div id="detailsFormatted" class="detailsFormatted hidden"></div>
+
+      <div class="muted small" style="margin-top:10px;">
+        *التفاصيل تُعرض بشكل متدرّج لتجربة أسرع.
+      </div>
+    </section>
+  </main>
+
+  <footer class="container footer muted small">
+    تنبيه: تحققي من الحساسية الغذائية وصلاحية المكونات ووقت الطهي الآمن، خصوصًا للدجاج واللحوم.
+  </footer>
+
+  <footer class="signature">
+   <strong>DaniahMZ</strong>
+  <span>Developed by</span>
+
+</footer>
+
+  <!-- Loading overlay (مثل الصور) -->
+  <div id="loadingOverlay" class="loadingOverlay hidden" aria-live="polite" aria-busy="true">
+    <div class="loadingCard" role="dialog" aria-modal="true" aria-label="جاري البحث">
+      <div class="loadingIcon" aria-hidden="true">
+        <div class="loadingRing"></div>
+        <div class="loadingMoon">🌙</div>
+      </div>
+      <div class="loadingTitle">جاري البحث عن وصفات…</div>
+      <div id="loadingText" class="loadingText">تقبل الله منا ومنكم صالح الأعمال.</div>
+    </div>
+  </div>
+
+  <script>
+    window.onTurnstileSuccess = (token) => {
+      window.__turnstileToken = token;
+      document.dispatchEvent(new CustomEvent("turnstile-token"));
+    };
+  </script>
+
+  <script>
+  window.__API_BASE__ = "https://ramadan-recipes-api.daniahzaheda.workers.dev";
+</script>
+<script src="./app.js"></script>
+
+</body>
+</html>
