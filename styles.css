@@ -34,10 +34,13 @@ body{
   position: relative;
   padding: 34px 0 18px;
   overflow:hidden;
+  z-index: 0;
 }
 .heroInner{
   text-align:center;
   padding-top: 12px;
+  position: relative;
+  z-index: 2;
 }
 .heroMoon{
   font-size: 34px;
@@ -55,8 +58,8 @@ body{
 .hero h1{ margin: 8px 0 8px; font-size: 46px; letter-spacing:.2px; }
 .heroSub{ margin:0; font-size: 20px; line-height: 1.7; color: #6b7280; }
 
-/* hanging decor (يشبه الصور) */
-.heroDecor{ position:absolute; inset:0; pointer-events:none; }
+/* hanging decor */
+.heroDecor{ position:absolute; inset:0; pointer-events:none; z-index:1; }
 .hang{ position:absolute; top:-4px; width: 92px; height: 150px; }
 .hang::before{
   content:"";
@@ -96,7 +99,6 @@ body{
   gap: 18px;
   align-items:start;
 }
-/* في RTL: العمود 1 يمين، العمود 2 يسار */
 .mainCard{ grid-column: 1; }
 .sidebar{ grid-column: 2; display:flex; flex-direction:column; gap: 14px; }
 
@@ -108,7 +110,6 @@ body{
 @media (max-width: 520px){
   .hero h1{ font-size: 32px; }
   .heroSub{ font-size: 16px; }
-  .hang{ display:none; }
 }
 
 /* ================== SIDEBAR CARDS ================== */
@@ -144,16 +145,19 @@ body{
   padding: 9px 14px;
   cursor:pointer;
   font-weight: 900;
+  color:#000;                 /* ثابت أسود */
 }
+.chip *{ color:#000 !important; } /* لو في span داخلي */
 .chip.active{
   background: rgba(202,164,90,.12);
+  color:#000;                 /* ثابت أسود */
 }
 .chip.active::after{
   content: "✓";
   font-weight: 900;
   font-size: 12px;
   margin-right: 8px;
-  color: rgba(15,23,42,.75);
+  color:#000;
 }
 
 /* ================== MAIN CARD ================== */
@@ -314,64 +318,7 @@ select{
 
 @keyframes fadeUp{ from{ opacity:0; transform: translateY(6px);} to{ opacity:1; transform: translateY(0);} }
 
-/* ================== DETAILS ================== */
-.details{
-  margin-top: 16px;
-  background: rgba(255,255,255,.95);
-  border:1px solid var(--line);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 14px;
-  animation: fadeUp .22s ease both;
-}
-.detailsHead{ display:flex; align-items:center; justify-content:space-between; gap: 10px; flex-wrap:wrap; }
-.detailsActions{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
-.detailsText{
-  margin-top: 10px;
-  border:1px solid var(--line);
-  border-radius: 16px;
-  background: linear-gradient(180deg, rgba(15,23,42,.02), rgba(202,164,90,.08));
-  padding: 12px;
-  line-height: 1.9;
-  font-size: 14px;
-  white-space: pre-wrap;
-  word-break: break-word;
-  min-height: 140px;
-  max-height: 420px;
-  overflow:auto;
-}
-
-.detailsFormatted{
-  margin-top: 10px;
-  border:1px solid var(--line);
-  border-radius: 16px;
-  background: linear-gradient(180deg, rgba(15,23,42,.01), rgba(202,164,90,.06));
-  padding: 14px;
-  line-height: 1.9;
-}
-.detailsSection{ margin-top: 12px; }
-.detailsSection:first-child{ margin-top: 0; }
-.detailsSectionTitle{
-  font-weight: 1000;
-  display:flex;
-  align-items:center;
-  gap: 8px;
-  margin: 0 0 6px;
-}
-.detailsList{
-  margin: 0;
-  padding-inline-start: 20px;
-}
-.detailsList li{ margin: 6px 0; }
-.detailsIntro{ margin: 0; color: rgba(15,23,42,.92); }
-.detailsGrid{
-  display:grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-@media (max-width: 760px){ .detailsGrid{ grid-template-columns: 1fr; } }
-
-/* ================== LOADING OVERLAY (مثل الصور) ================== */
+/* ================== LOADING OVERLAY ================== */
 .loadingOverlay{
   position: fixed;
   inset: 0;
@@ -381,9 +328,7 @@ select{
   background: rgba(255,255,255,.55);
   backdrop-filter: blur(8px);
 }
-.loadingOverlay.hidden{
-  display: none;
-}
+.loadingOverlay.hidden{ display:none; }
 .loadingCard{
   width: min(520px, calc(100vw - 40px));
   background: rgba(255,255,255,.92);
@@ -424,10 +369,8 @@ select{
   font-weight: 900;
   cursor:pointer;
 }
-a.btn.youtube{ text-decoration: none !important; color:#000 !important; }
-.btn.primary{
-  background: rgba(15,23,42,.08);
-}
+a.btn.youtube{ text-decoration:none !important; color:#000 !important; }
+.btn.primary{ background: rgba(15,23,42,.08); }
 .btn.youtube{
   border-color: rgba(202,164,90,.55);
   background: rgba(202,164,90,.10);
@@ -446,36 +389,24 @@ a.btn.youtube{ text-decoration: none !important; color:#000 !important; }
 
 .footer{ margin-top: 22px; }
 
-
-/* ===== رمضان: إضاءة الفوانيس فقط (الصقيه آخر ملف CSS) ===== */
-
-/* نخلي جسم الفانوس يضوي + يلمع */
+/* ===== Ramadan lantern glow ===== */
 .hang::after{
-  /* نحتفظ بحركة التأرجح الموجودة + نضيف وميض إضاءة */
   animation: swing 3.6s ease-in-out infinite, lanternGlow 2.2s ease-in-out infinite !important;
-
-  /* لون أدفى ولمعة */
   background: linear-gradient(
     180deg,
     rgba(255, 235, 190, .95) 0%,
     rgba(202,164,90,.95) 45%,
     rgba(202,164,90,.55) 100%
   ) !important;
-
-  /* هالة ضوء */
   box-shadow:
     0 18px 34px rgba(202,164,90,.24),
     0 0 18px rgba(255, 230, 170,.35),
     0 0 48px rgba(202,164,90,.22) !important;
-
   filter: saturate(1.1) brightness(1.05);
 }
-
-/* اختلاف بسيط بين اليمين واليسار */
 .hangLeft::after{ animation-delay: .2s, .05s !important; }
 .hangRight::after{ animation-delay: .55s, .25s !important; }
 
-/* وميض الإضاءة */
 @keyframes lanternGlow{
   0%,100%{
     box-shadow:
@@ -493,19 +424,20 @@ a.btn.youtube{ text-decoration: none !important; color:#000 !important; }
   }
 }
 
-/* ===== نجوم واضحة فوق الهيرو ===== */
-
-/* نخلي النجوم فوق كل العناصر */
+/* ===== Stars (FIXED: no huge overlay on mobile) ===== */
 .hero::before,
 .hero::after{
   content:"";
   position:absolute;
-  inset:0;
   pointer-events:none;
-  z-index: 10; /* فوق كل شيء */
+  z-index:0;         /* خلف كل شيء */
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 160px;     /* نجوم فقط فوق */
+  bottom: auto;
 }
 
-/* النجوم الأساسية */
 .hero::before{
   background:
     radial-gradient(circle at 10% 20%, #ffffff 0 2px, transparent 4px),
@@ -518,34 +450,32 @@ a.btn.youtube{ text-decoration: none !important; color:#000 !important; }
     radial-gradient(circle at 50% 35%, #ffffff 0 2px, transparent 4px),
     radial-gradient(circle at 70% 42%, rgba(255,255,255,.9) 0 1.8px, transparent 4px),
     radial-gradient(circle at 85% 38%, #ffffff 0 2px, transparent 4px);
-
   filter:
-    drop-shadow(0 0 6px rgba(255,255,255,.8))
-    drop-shadow(0 0 12px rgba(255,255,255,.5));
-
+    drop-shadow(0 0 6px rgba(255,255,255,.55))
+    drop-shadow(0 0 12px rgba(255,255,255,.30));
   animation: starsTwinkle 3s ease-in-out infinite;
 }
 
-/* طبقة ثانية للعمق */
 .hero::after{
   background:
     radial-gradient(circle at 15% 12%, rgba(255,255,255,.7) 0 1.5px, transparent 4px),
     radial-gradient(circle at 35% 30%, rgba(255,255,255,.6) 0 1.5px, transparent 4px),
     radial-gradient(circle at 55% 22%, rgba(255,255,255,.7) 0 1.5px, transparent 4px),
     radial-gradient(circle at 80% 28%, rgba(255,255,255,.6) 0 1.5px, transparent 4px);
-
-  filter: drop-shadow(0 0 8px rgba(255,255,255,.6));
-
+  filter: drop-shadow(0 0 8px rgba(255,255,255,.35));
   animation: starsTwinkle 4.5s ease-in-out infinite reverse;
 }
 
-/* وميض أوضح */
 @keyframes starsTwinkle{
-  0%,100%{
-    opacity:.55;
-  }
-  50%{
-    opacity:1;
+  0%,100%{ opacity:.55; }
+  50%{ opacity:1; }
+}
+
+@media (max-width: 520px){
+  .hero::before,
+  .hero::after{
+    height: 110px;
+    opacity: .75;
   }
 }
 
@@ -557,7 +487,6 @@ a.btn.youtube{ text-decoration: none !important; color:#000 !important; }
   font-size: 14px;
   color: #6b7280;
 }
-
 .signature strong{
   display: inline-block;
   margin-right: 6px;
@@ -565,9 +494,38 @@ a.btn.youtube{ text-decoration: none !important; color:#000 !important; }
   font-weight: 900;
   color: var(--gold);
   letter-spacing: .5px;
-
-  /* glow خفيف */
   text-shadow:
     0 0 6px rgba(202,164,90,.35),
     0 0 12px rgba(202,164,90,.15);
+}
+
+/* ================== MOBILE: ONE LANTERN ON EDGE (RIGHT) ================== */
+@media (max-width: 520px){
+
+  /* اخفي الاثنين */
+  .hang{ display:none !important; }
+
+  /* أظهر فانوس واحد على طرف الشاشة (يمين) */
+  .hangRight{
+    display:block !important;
+    position:absolute;
+    top: -6px;
+    right: -16px;
+    width: 78px;
+    height: 140px;
+    opacity: .95;
+    z-index: 3;
+  }
+
+  .hangRight::before{
+    height: 78px;
+    opacity: .55;
+  }
+
+  .hangRight::after{
+    top: 78px;
+    width: 48px;
+    height: 66px;
+    border-radius: 14px;
+  }
 }
